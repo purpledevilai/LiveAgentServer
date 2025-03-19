@@ -1,4 +1,6 @@
 py-mon==2.0.5
-Flask==3.1.0
+websockets==14.2
+python-dotenv==1.0.1
+boto3==1.37.15
 langchain==0.3.19
 langchain-openai==0.3.6
