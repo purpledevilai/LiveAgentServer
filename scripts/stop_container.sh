@@ -1,5 +1,5 @@
 #!/bin/bash
 
 
-docker stop chat-stream-server-container
-docker rm chat-stream-server-container
+docker stop live-agent-server-container
+docker rm live-agent-server-container

@@ -1,12 +1,12 @@
 from typing import List
 import json
-from llm.AgnetTool import AgentTool
+from llm.AgentTool import AgentTool
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, BaseMessage, ToolMessage, AIMessage
 
 
-class AgentChatStream:
+class LiveChatAgent:
     #####################
     #                   #
     # -- Constructor -- #

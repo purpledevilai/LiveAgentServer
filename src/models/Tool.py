@@ -5,7 +5,7 @@ from aws.DynamoDB import get_item, put_item, delete_item, get_all_items_by_index
 from pydantic import BaseModel
 from models import User, ParameterDefinition
 from typing import Optional
-from llm.AgnetTool import AgentTool
+from llm.AgentTool import AgentTool
 from aws.Lambda import invoke_lambda
 from tools import ToolRegistry
 

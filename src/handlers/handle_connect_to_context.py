@@ -1,9 +1,10 @@
 import json
 from aws import Cognito
 from models import Connection, User, Context, Agent, Tool
-from llm.AgentChatStream import AgentChatStream
+from llm.LiveChatAgent import LiveChatAgent
 from llm.CreateLLM import create_llm
 from llm.BaseMessagesConverter import dict_messages_to_base_messages
+
 
 async def handle_connect_to_context(data: dict, connection: Connection.Connection):
 
@@ -18,24 +19,22 @@ async def handle_connect_to_context(data: dict, connection: Connection.Connectio
     context_id = data.get("context_id")
     if (context_id == None):
         raise Exception("No context_id provided")
-    
-    # Get the context
-    context = None
-    if (user):
-        context = Context.get_context_for_user(context_id, user.user_id)
-    else:
-        context = Context.get_public_context(context_id)
-    context_dict = context.model_dump()
 
-    # Get the agent
+    # Get the context and agent
+    context = None
     agent = None
     if (user):
+        context = Context.get_context_for_user(context_id, user.user_id)
         agent = Agent.get_agent_for_user(context.agent_id, user)
     else:
+        context = Context.get_public_context(context_id)
         agent = Agent.get_public_agent(context.agent_id)
 
+    # Context dict for context updates
+    context_dict = context.model_dump()
+
     # Create the agent chat stream
-    agent_chat = AgentChatStream(
+    chat_agent = LiveChatAgent(
         create_llm(),
         agent.prompt,
         messages=dict_messages_to_base_messages(context.messages),
@@ -45,7 +44,7 @@ async def handle_connect_to_context(data: dict, connection: Connection.Connectio
 
     # Set the connection's context and agent_chat
     connection.context = context
-    connection.agent_chat = agent_chat
+    connection.chat_agent = chat_agent
 
     # Send acknowledgement
     await connection.websocket.send(json.dumps({"type": "context_connected", "success": True}))

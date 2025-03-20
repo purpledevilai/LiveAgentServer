@@ -42,4 +42,4 @@ async def handle_message(connection: Connection.Connection, message: str):
 
     except Exception as e:
         print(f"Error: {e}")
-        await connection.websocket.send(json.dumps({"error": str(e)}))
+        await connection.websocket.send(json.dumps({"type": "error", "error": str(e)}))
