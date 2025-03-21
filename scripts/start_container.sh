@@ -2,7 +2,7 @@
 
 
 # Docker run
-docker run -p 9000:9000 \
+docker run -p 8080:8080 \
   --name live-agent-server-container \
   -it \
   --env-file .env \

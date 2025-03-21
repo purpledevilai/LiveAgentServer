@@ -1,24 +1,34 @@
-import asyncio
-import websockets
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from models import Connection
 from handle_message import handle_message
 
-async def socket_server(websocket):
+app = FastAPI()
+
+# Optional: Add CORS if you expect to call from other domains
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace with your frontend origin if needed
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
     print("Connection opened")
+
     connection = Connection.Connection(websocket=websocket)
+
     try:
-        async for message in websocket:
+        while True:
+            message = await websocket.receive_text()
             await handle_message(connection, message)
-    except websockets.exceptions.ConnectionClosed:
-        print("There was an error with the WebSocket connection")
-    finally:
+    except WebSocketDisconnect:
         print("Connection closed")
+    except Exception as e:
+        print("There was an error with the WebSocket connection:", e)
+    finally:
         await websocket.close()
-
-async def main():
-    async with websockets.serve(socket_server, "0.0.0.0", 9000):
-        print("WebSocket server started on ws://localhost:9000")
-        await asyncio.Future()  # Keeps the server running indefinitely
-
-if __name__ == "__main__":
-    asyncio.run(main())

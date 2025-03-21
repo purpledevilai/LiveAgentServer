@@ -1,4 +1,3 @@
-import json
 from models import Connection, Context
 from llm.BaseMessagesConverter import base_messages_to_dict_messages
 
@@ -20,7 +19,7 @@ async def handle_user_message(data: dict, connection: Connection.Connection):
 
     # Stream tokens
     for token in token_stream:
-        await connection.websocket.send(json.dumps({"type": "message", "message": token}))
+        await connection.websocket.send_json({"type": "message", "message": token})
 
     # Save the new message to context
     context: Context.Context = connection.context
@@ -29,6 +28,6 @@ async def handle_user_message(data: dict, connection: Connection.Connection):
 
     # check if there are chat events
     if (connection.chat_agent.context.get("events")):
-        await connection.websocket.send(json.dumps({"type": "events", "events": connection.chat_agent.context["events"]}))
+        await connection.websocket.send_json({"type": "events", "events": connection.chat_agent.context["events"]})
         connection.chat_agent.context["events"] = []
     

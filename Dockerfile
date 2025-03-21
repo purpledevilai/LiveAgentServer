@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the src folder to the working directory
 COPY src .
 
-# Expose the WebSocket port
-EXPOSE 9000
+# Expose the FastAPI port (default 8080)
+EXPOSE 8080
 
-# Run the WebSocket server
-CMD ["pymon", "./app.py"]
+# Run the FastAPI server using uvicorn
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]

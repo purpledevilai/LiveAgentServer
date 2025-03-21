@@ -1,4 +1,3 @@
-import json
 from aws import Cognito
 from models import Connection, User, Context, Agent, Tool
 from llm.LiveChatAgent import LiveChatAgent
@@ -47,4 +46,4 @@ async def handle_connect_to_context(data: dict, connection: Connection.Connectio
     connection.chat_agent = chat_agent
 
     # Send acknowledgement
-    await connection.websocket.send(json.dumps({"type": "context_connected", "success": True}))
+    await connection.websocket.send_json({"type": "context_connected", "success": True})

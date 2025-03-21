@@ -1,2 +1,3 @@
 .env
+.env.copilot
 __pycache__
