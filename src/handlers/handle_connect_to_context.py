@@ -46,4 +46,17 @@ async def handle_connect_to_context(data: dict, connection: Connection.Connectio
     connection.chat_agent = chat_agent
 
     # Send acknowledgement
-    await connection.websocket.send_json({"type": "context_connected", "success": True})
+    await connection.websocket.send_json({
+        "type": "context_connected",
+        "success": True,
+        "agent_speaks_first": agent.agent_speaks_first,
+    })
+
+    # Check if the agent speaks first
+    if (agent.agent_speaks_first):
+        # Invoke the agent chat stream
+        token_stream = connection.chat_agent.invoke()
+
+        # Stream tokens
+        for token in token_stream:
+            await connection.websocket.send_json({"type": "message", "message": token})
